@@ -191,15 +191,18 @@ module Makara
     def _appropriate_pool(method_name, args)
       # the args provided absolutely need master
       if needs_master?(method_name, args)
+        Notifications.notify!('Proxy:appropriate_pool:master')
         stick_to_master(method_name, args)
         @master_pool
 
       # in this context, we've already stuck to master
       elsif Makara::Context.get_current == @master_context
+        Notifications.notify!('Proxy:appropriate_pool:master')
         @master_pool
 
       # the previous context stuck us to master
       elsif previously_stuck_to_master?
+        Notifications.notify!('Proxy:appropriate_pool:master')
 
         # we're only on master because of the previous context so
         # behave like we're sticking to master but store the current context
@@ -208,6 +211,7 @@ module Makara
 
       # all slaves are down (or empty)
       elsif @slave_pool.completely_blacklisted?
+        Notifications.notify!('Proxy:appropriate_pool:master')
         stick_to_master(method_name, args)
         @master_pool
 
@@ -216,6 +220,7 @@ module Makara
 
       # yay! use a slave
       else
+        Notifications.notify!('Proxy:appropriate_pool:replica')
         @slave_pool
       end
     end
@@ -248,6 +253,7 @@ module Makara
 
 
     def stick_to_master(method_name, args, write_to_cache = true)
+      Notifications.notify!('Proxy:stick_to_master', method_name, args, write_to_cache)
       # if we're already stuck to master, don't bother doing it again
       return if @master_context == Makara::Context.get_current
 

@@ -16,10 +16,13 @@ module Makara
       end
 
       def read(key)
-        store.try(:read, key)
+        store.try(:read, key).tap do |value|
+          Notifications.notify!('Cache:read', key, value)
+        end
       end
 
       def write(key, value, ttl)
+        Notifications.notify!('Cache:write', key, value, ttl)
         store.try(:write, key, value, :expires_in => ttl.to_i)
       end
 

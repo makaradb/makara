@@ -24,6 +24,18 @@ describe Makara::Cache do
     expect(described_class.read('test')).to be_nil
   end
 
+  context 'notifications' do
+    before { allow(Makara::Notifications).to receive(:notify!) }
+
+    it 'notifies on read and write' do
+      described_class.read('test')
+      expect(Makara::Notifications).to have_received(:notify!).with('Cache:read', 'test', nil)
+      described_class.write('test', 'value', 10)
+      expect(Makara::Notifications).to have_received(:notify!).with('Cache:write', 'test', 'value', 10)
+      described_class.read('test')
+      expect(Makara::Notifications).to have_received(:notify!).with('Cache:read', 'test', 'value')
+    end
+  end
 
   # this will be used in tests so we have to ensure this works as expected
   context Makara::Cache::MemoryStore do

@@ -13,18 +13,24 @@ module Makara
       end
 
       def get_previous
-        get_current_thread_local_for(:makara_context_previous)
+        get_current_thread_local_for(:makara_context_previous).tap do |context|
+          Notifications.notify!('Context:get_previous', context)
+        end
       end
 
       def set_previous(context)
+        Notifications.notify!('Context:set_previous', context)
         set_current_thread_local(:makara_context_previous,context)
       end
 
       def get_current
-        get_current_thread_local_for(:makara_context_current)
+        get_current_thread_local_for(:makara_context_current).tap do |context|
+          Notifications.notify!('Context:get_current', context)
+        end
       end
 
       def set_current(context)
+        Notifications.notify!('Context:set_current', context)
         set_current_thread_local(:makara_context_current,context)
       end
 

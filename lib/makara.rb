@@ -8,6 +8,7 @@ module Makara
   autoload :Context,            'makara/context'
   autoload :ErrorHandler,       'makara/error_handler'
   autoload :Middleware,         'makara/middleware'
+  autoload :Notifications,      'makara/notifications'
   autoload :Pool,               'makara/pool'
   autoload :Proxy,              'makara/proxy'
 
