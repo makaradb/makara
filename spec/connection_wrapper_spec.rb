@@ -39,4 +39,43 @@ describe Makara::ConnectionWrapper do
       end
     end
   end
+
+  describe '#_makara_connection' do
+    it 'return connection when successfully connected' do
+      expect(subject._makara_connection).to eq(connection)
+    end
+
+    it 'raise error when blacklisted with initial_error' do
+      expect(subject).to receive(:initial_error).and_return(StandardError.new('some connection issue')).twice # master + slave
+      subject._makara_blacklist!
+
+      expect(proxy).not_to receive(:graceful_connection_for)
+
+      expect{ subject._makara_connection }.to raise_error(Makara::Errors::BlacklistConnection)
+    end
+
+    context 'not connected' do
+      it 'return connection when re-connecting successfully' do
+        fake_connection = FakeConnection.new({:master_ttl=>5, :blacklist_duration=>5, :sticky=>true, :name=>"master/1"})
+
+        subject.instance_variable_set(:@connection, nil)
+        expect(proxy).to receive(:graceful_connection_for).and_return(fake_connection)
+
+        expect(subject._makara_connection).to eq(fake_connection)
+      end
+
+      it 'raise error when unable to connect' do
+        fake_connection = FakeConnection.new({:master_ttl=>5, :blacklist_duration=>5, :sticky=>true, :name=>"master/1"})
+        connection_error = StandardError.new('some connection issue')
+        expect(fake_connection).to receive(:is_a?).with(Makara::ConnectionWrapper).and_return(true)
+        expect(fake_connection).to receive(:initial_error).and_return(connection_error)
+
+        subject.instance_variable_set(:@connection, nil)
+        expect(proxy).to receive(:graceful_connection_for).and_return(fake_connection)
+
+        expect(subject).to receive(:_makara_blacklist!)
+        expect{ subject._makara_connection }.to raise_error(Makara::Errors::BlacklistConnection)
+      end
+    end
+  end
 end
