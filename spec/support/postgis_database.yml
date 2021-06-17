@@ -1,9 +1,6 @@
 test:
   adapter: 'makara_postgis'
   database: 'makara_test'
-  username: 'root'
-  password: ''
-
   timeout: 5000
 
   makara:

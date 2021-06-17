@@ -4,5 +4,4 @@ source "https://rubygems.org"
 gemspec path: "../"
 
 gem "activerecord", "~> 6.0.0"
-
-# gem "mysql2", "~> 0.4.10", platform: :ruby
+gem "activerecord-postgis-adapter", "~> 6.0"

@@ -1,13 +1,8 @@
-# RGeo doesn't play well with JRuby and to avoid complicated test setup
-# we're only testing ActiveRecord version ~> 4.2
+# RGeo doesn't play well with JRuby
 
 require 'active_record'
 
-# TODO: test this in AR 5+ ?
-if RUBY_ENGINE == 'ruby' &&
-    ActiveRecord::VERSION::MAJOR == 4 &&
-    ActiveRecord::VERSION::MINOR >= 2
-
+if RUBY_ENGINE == 'ruby'
   require 'spec_helper'
   require 'rgeo'
   require 'activerecord-postgis-adapter'
