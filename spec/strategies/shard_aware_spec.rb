@@ -13,7 +13,7 @@ describe Makara::Strategies::ShardAware do
   describe "failover strategy with shard awareness," do
     let(:proxy){ FakeProxy.new({makara: pool_config.merge(makara_config).merge(connections: [])}) }
     let(:pool){ Makara::Pool.new('primary', proxy) }
-    let(:pool_config){ { blacklist_duration: 5} }
+    let(:pool_config){ { blocklist_duration: 5} }
     let(:makara_config) { {
         primary_strategy: 'failover',
         primary_shard_aware: true,
@@ -87,7 +87,7 @@ describe Makara::Strategies::ShardAware do
       with_shard('shard1') do
         pool.provide do |connection|
           if connection == wrapper_a
-            raise Makara::Errors::BlacklistConnection.new(wrapper_a, StandardError.new('failure'))
+            raise Makara::Errors::BlocklistConnection.new(wrapper_a, StandardError.new('failure'))
           end
         end
         expect(strategy.current.something).to eql('b')
@@ -110,7 +110,7 @@ describe Makara::Strategies::ShardAware do
   describe "round_robin strategy with shard awareness," do
     let(:proxy){ FakeProxy.new({makara: pool_config.merge(makara_config).merge(connections: [])}) }
     let(:pool){ Makara::Pool.new('primary', proxy) }
-    let(:pool_config){ { blacklist_duration: 5} }
+    let(:pool_config){ { blocklist_duration: 5} }
     let(:makara_config) { {
         primary_strategy: 'round_robin',
         primary_shard_aware: true,
@@ -162,7 +162,7 @@ describe Makara::Strategies::ShardAware do
       with_shard('shard1') do
         pool.provide do |connection|
           if connection == wrapper_a
-            raise Makara::Errors::BlacklistConnection.new(wrapper_a, StandardError.new('failure'))
+            raise Makara::Errors::BlocklistConnection.new(wrapper_a, StandardError.new('failure'))
           end
         end
         expect(strategy.current.something).to eql('b')
@@ -187,7 +187,7 @@ describe Makara::Strategies::ShardAware do
   describe "uses the configured failover strategy when shard_aware set to false," do
     let(:proxy){ FakeProxy.new({makara: pool_config.merge(makara_config).merge(connections: [])}) }
     let(:pool){ Makara::Pool.new('primary', proxy) }
-    let(:pool_config){ { blacklist_duration: 5} }
+    let(:pool_config){ { blocklist_duration: 5} }
     let(:makara_config) { {
         primary_strategy: 'failover',
         primary_shard_aware: false,
@@ -203,7 +203,7 @@ describe Makara::Strategies::ShardAware do
   describe "uses the configured roundrobin strategy when shard_aware set to false," do
     let(:proxy){ FakeProxy.new({makara: pool_config.merge(makara_config).merge(connections: [])}) }
     let(:pool){ Makara::Pool.new('primary', proxy) }
-    let(:pool_config){ { blacklist_duration: 5} }
+    let(:pool_config){ { blocklist_duration: 5} }
     let(:makara_config) { {
         primary_strategy: 'round_robin',
         primary_shard_aware: false,

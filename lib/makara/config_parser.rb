@@ -11,7 +11,8 @@ require 'cgi'
 #   another: 'top level variable'
 #   makara:
 #     primary_ttl: 3
-#     blacklist_duration: 20
+#     blacklist_duration: 20 # Deprecated in favor of 'blocklist_duration'
+#     blocklist_duration: 20
 #     connections:
 #       - role: 'master' # Deprecated in favor of 'primary'
 #       - role: 'primary'
@@ -23,7 +24,7 @@ module Makara
   class ConfigParser
     DEFAULTS = {
       primary_ttl: 5,
-      blacklist_duration: 30,
+      blocklist_duration: 30,
       sticky: true
     }
 
@@ -34,7 +35,8 @@ module Makara
       master_strategy:      :primary_strategy,
       master_shard_aware:   :primary_shard_aware,
       master_default_shard: :primary_default_shard,
-      master_ttl:           :primary_ttl
+      master_ttl:           :primary_ttl,
+      blacklist_duration:   :blocklist_duration,
     }.freeze
 
     ConnectionUrlResolver =

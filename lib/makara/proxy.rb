@@ -153,14 +153,14 @@ module Makara
       @error_handler.handle(fake_wrapper) do
         connection_for(config)
       end
-    rescue Makara::Errors::BlacklistConnection => e
+    rescue Makara::Errors::BlocklistConnection => e
       fake_wrapper.initial_error = e.original_error
       fake_wrapper
     end
 
     def disconnect!
       send_to_all(:disconnect!)
-    rescue ::Makara::Errors::AllConnectionsBlacklisted, ::Makara::Errors::NoConnectionsAvailable
+    rescue ::Makara::Errors::AllConnectionsBlocklisted, ::Makara::Errors::NoConnectionsAvailable
       # all connections are already down, nothing to do here
     end
 
@@ -186,7 +186,7 @@ module Makara
           yield con
         end
       end
-    rescue ::Makara::Errors::AllConnectionsBlacklisted, ::Makara::Errors::NoConnectionsAvailable
+    rescue ::Makara::Errors::AllConnectionsBlocklisted, ::Makara::Errors::NoConnectionsAvailable
       begin
         @primary_pool.disabled = true
         @replica_pool.provide do |con|
@@ -215,13 +215,13 @@ module Makara
       # for testing purposes
       pool = _appropriate_pool(method_name, args)
       yield pool
-    rescue ::Makara::Errors::AllConnectionsBlacklisted, ::Makara::Errors::NoConnectionsAvailable => e
+    rescue ::Makara::Errors::AllConnectionsBlocklisted, ::Makara::Errors::NoConnectionsAvailable => e
       if pool == @primary_pool
-        @primary_pool.connections.each(&:_makara_whitelist!)
-        @replica_pool.connections.each(&:_makara_whitelist!)
+        @primary_pool.connections.each(&:_makara_allowlist!)
+        @replica_pool.connections.each(&:_makara_allowlist!)
         Kernel.raise e
       else
-        @primary_pool.blacklist_errors << e
+        @primary_pool.blocklist_errors << e
         retry
       end
     end
@@ -240,7 +240,7 @@ module Makara
         @primary_pool
 
       # all replicas are down (or empty)
-      elsif @replica_pool.completely_blacklisted?
+      elsif @replica_pool.completely_blocklisted?
         stick_to_primary(method_name, args)
         @primary_pool
 

@@ -25,7 +25,7 @@ describe Makara::ConfigParser do
     let(:config_without_url) do
       {
         primary_ttl: 5,
-        blacklist_duration: 30,
+        blocklist_duration: 30,
         sticky: true,
         adapter: 'mysql2_makara',
         encoding: 'utf8',
@@ -40,7 +40,7 @@ describe Makara::ConfigParser do
     let(:config_with_url) do
       {
         primary_ttl: 5,
-        blacklist_duration: 30,
+        blocklist_duration: 30,
         sticky: true,
         adapter: 'mysql2_makara',
         encoding: 'utf8',
@@ -114,7 +114,7 @@ describe Makara::ConfigParser do
           name: 'theprimary',
           top_level: 'value',
           sticky: true,
-          blacklist_duration: 30,
+          blocklist_duration: 30,
           primary_ttl: 5
         }
       ])
@@ -123,22 +123,22 @@ describe Makara::ConfigParser do
           name: 'replica1',
           top_level: 'value',
           sticky: true,
-          blacklist_duration: 30,
+          blocklist_duration: 30,
           primary_ttl: 5
         },
         {
           name: 'replica2',
           top_level: 'value',
           sticky: true,
-          blacklist_duration: 30,
+          blocklist_duration: 30,
           primary_ttl: 5
         }
       ])
     end
 
     it 'connection configuration should override makara config' do
-      config[:makara][:blacklist_duration] = 123
-      config[:makara][:connections][0][:blacklist_duration] = 456
+      config[:makara][:blocklist_duration] = 123
+      config[:makara][:connections][0][:blocklist_duration] = 456
       config[:makara][:connections][1][:top_level] = 'replica value'
 
       parser = described_class.new(config)
@@ -147,7 +147,7 @@ describe Makara::ConfigParser do
           name: 'theprimary',
           top_level: 'value',
           sticky: true,
-          blacklist_duration: 456,
+          blocklist_duration: 456,
           primary_ttl: 5
         }
       ])
@@ -156,14 +156,14 @@ describe Makara::ConfigParser do
           name: 'replica1',
           top_level: 'replica value',
           sticky: true,
-          blacklist_duration: 123,
+          blocklist_duration: 123,
           primary_ttl: 5
         },
         {
           name: 'replica2',
           top_level: 'value',
           sticky: true,
-          blacklist_duration: 123,
+          blocklist_duration: 123,
           primary_ttl: 5
         }
       ])

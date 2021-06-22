@@ -26,7 +26,7 @@ describe 'MakaraMysql2Adapter' do
       connection = ActiveRecord::Base.connection
 
       connection.replica_pool.connections.each do |c|
-        allow(c).to receive(:_makara_blacklisted?){ true }
+        allow(c).to receive(:_makara_blocklisted?){ true }
         allow(c).to receive(:_makara_connected?){ false }
         expect(c).to receive(:execute).with('SET @t1 = 1').never
       end
@@ -45,7 +45,7 @@ describe 'MakaraMysql2Adapter' do
       connection = ActiveRecord::Base.connection
 
       (connection.replica_pool.connections | connection.primary_pool.connections).each do |c|
-        allow(c).to receive(:_makara_blacklisted?){ true }
+        allow(c).to receive(:_makara_blocklisted?){ true }
         allow(c).to receive(:_makara_connected?){ false }
         expect(c).to receive(:execute).with('SET @t1 = 1').never
       end
@@ -84,7 +84,7 @@ describe 'MakaraMysql2Adapter' do
           original_method.call(config)
         end
 
-        ActiveRecord::Base.connection.replica_pool.connections.each(&:_makara_whitelist!)
+        ActiveRecord::Base.connection.replica_pool.connections.each(&:_makara_allowlist!)
         ActiveRecord::Base.connection.replica_pool.provide do |con|
           res = con.execute('SELECT count(*) FROM users')
           if defined?(JRUBY_VERSION)
@@ -173,18 +173,18 @@ describe 'MakaraMysql2Adapter' do
       connection.reconnect!
     end
 
-    it 'should allow reconnecting when one of the nodes is blacklisted' do
+    it 'should allow reconnecting when one of the nodes is blocklisted' do
       con = connection.replica_pool.connections.first
-      allow(con).to receive(:_makara_blacklisted?){ true }
+      allow(con).to receive(:_makara_blocklisted?){ true }
       connection.reconnect!
     end
 
     if !defined?(JRUBY_VERSION)
       # yml settings only for mysql2
-      it 'should blacklist on timeout' do
+      it 'should blocklist on timeout' do
         expect {
           connection.execute('SELECT SLEEP(2)') # read timeout set to 1
-        }.to raise_error(Makara::Errors::AllConnectionsBlacklisted)
+        }.to raise_error(Makara::Errors::AllConnectionsBlocklisted)
       end
     end
   end

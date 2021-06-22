@@ -5,7 +5,7 @@ test:
   timeout: 5000
 
   makara:
-    blacklist_duration: 2
+    blocklist_duration: 2
     primary_ttl: 5
     connections:
       - role: primary

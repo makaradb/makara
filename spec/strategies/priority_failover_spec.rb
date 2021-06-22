@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Makara::Strategies::PriorityFailover do
   let(:proxy){ FakeProxy.new({makara: pool_config.merge(makara_config).merge(connections: [])}) }
   let(:pool){ Makara::Pool.new('primary', proxy) }
-  let(:pool_config){ {blacklist_duration: 5} }
+  let(:pool_config){ {blocklist_duration: 5} }
   let(:makara_config) { { primary_strategy: 'failover' } }
   let(:strategy) { pool.strategy }
 
@@ -37,7 +37,7 @@ describe Makara::Strategies::PriorityFailover do
 
     pool.provide do |connection|
       if connection == wrapper_a
-        raise Makara::Errors::BlacklistConnection.new(wrapper_a, StandardError.new('failure'))
+        raise Makara::Errors::BlocklistConnection.new(wrapper_a, StandardError.new('failure'))
       end
     end
 

@@ -1,6 +1,6 @@
 module Makara
   module Errors
-    class BlacklistConnection < MakaraError
+    class BlocklistConnection < MakaraError
       attr_reader :original_error
 
       def initialize(connection, error)

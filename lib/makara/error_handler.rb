@@ -17,7 +17,7 @@ module Makara
     protected
 
     def gracefully(connection, e)
-      err = Makara::Errors::BlacklistConnection.new(connection, e)
+      err = Makara::Errors::BlocklistConnection.new(connection, e)
       ::Makara::Logging::Logger.log("Gracefully handling: #{err}")
       raise err
     end

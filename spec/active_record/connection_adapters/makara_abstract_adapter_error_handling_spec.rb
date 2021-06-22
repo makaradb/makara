@@ -49,12 +49,12 @@ describe ActiveRecord::ConnectionAdapters::MakaraAbstractAdapter::ErrorHandler d
       expect(handler).to be_connection_message(msg)
     end
 
-    it 'should blacklist the connection' do
+    it 'should blocklist the connection' do
       expect {
         handler.handle(connection) do
           raise msg
         end
-      }.to raise_error(Makara::Errors::BlacklistConnection)
+      }.to raise_error(Makara::Errors::BlocklistConnection)
     end
   end
 
@@ -76,12 +76,38 @@ describe ActiveRecord::ConnectionAdapters::MakaraAbstractAdapter::ErrorHandler d
       expect(handler).to be_custom_error_message(connection, msg4)
     end
 
-    it "blacklists the connection" do
+    it "blocklists the connection" do
       expect {
         handler.handle(connection) do
           raise msg1
         end
-      }.to raise_error(Makara::Errors::BlacklistConnection)
+      }.to raise_error(Makara::Errors::BlocklistConnection)
+    end
+  end
+
+  describe 'deprecated classes' do
+    it 'uses replacement for Makara::Errors::AllConnectionsBlacklisted and warns' do
+      expect {
+        expect(Makara::Errors::AllConnectionsBlacklisted).to eq(Makara::Errors::AllConnectionsBlocklisted)
+      }.to output(<<~MSG).to_stderr
+        Makara::Errors::AllConnectionsBlacklisted is deprecated. Switch to Makara::Errors::AllConnectionsBlocklisted
+      MSG
+    end
+
+    it 'uses replacement for Makara::Errors::BlacklistConnection and warns' do
+      expect {
+        expect(Makara::Errors::BlacklistConnection).to eq(Makara::Errors::BlocklistConnection)
+      }.to output(<<~MSG).to_stderr
+        Makara::Errors::BlacklistConnection is deprecated. Switch to Makara::Errors::BlocklistConnection
+      MSG
+    end
+
+    it 'uses replacement for Makara::Errors::BlacklistedWhileInTransaction and warns' do
+      expect {
+        expect(Makara::Errors::BlacklistedWhileInTransaction).to eq(Makara::Errors::BlocklistedWhileInTransaction)
+      }.to output(<<~MSG).to_stderr
+        Makara::Errors::BlacklistedWhileInTransaction is deprecated. Switch to Makara::Errors::BlocklistedWhileInTransaction
+      MSG
     end
   end
 end

@@ -48,13 +48,13 @@ module Makara
         idx
       end
 
-      # return the connection if it's not blacklisted
+      # return the connection if it's not blocklisted
       # otherwise return nil
       # optionally, store the position and context we're returning
       def safe_value(idx, stick = false)
         con = @weighted_connections[idx]
         return nil unless con
-        return nil if con._makara_blacklisted?
+        return nil if con._makara_blocklisted?
 
         if stick
           @current_idx = idx
