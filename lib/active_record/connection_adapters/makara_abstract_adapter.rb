@@ -15,7 +15,6 @@ module ActiveRecord
           /(closed|lost|no|terminating|terminated)\s?([^\s]+)?\sconnection/,
           /gone away/,
           /connection[^:]+refused/,
-          /could not connect/,
           /can\'t connect/,
           /cannot connect/,
           /connection[^:]+closed/,

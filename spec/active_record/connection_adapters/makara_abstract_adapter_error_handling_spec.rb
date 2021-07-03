@@ -58,6 +58,14 @@ describe ActiveRecord::ConnectionAdapters::MakaraAbstractAdapter::ErrorHandler d
     end
   end
 
+  it "shouldn't treat Kafka connection errors as database errors" do
+    expect {
+      handler.handle(connection) do
+        raise "Could not connect to any of the seed brokers"
+      end
+    }.to raise_error(RuntimeError)
+  end
+
   describe 'custom errors' do
     let(:config_path) { File.join(File.expand_path('../../../', __FILE__), 'support', 'mysql2_database_with_custom_errors.yml') }
     let(:config) { YAML.load(ERB.new(File.read(config_path)).result)['test'] }
