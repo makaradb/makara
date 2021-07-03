@@ -1,4 +1,4 @@
-require 'digest/md5'
+require 'openssl'
 require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/hash/except'
 require 'cgi'
@@ -79,7 +79,7 @@ module Makara
     def id
       @id ||= begin
         sorted = recursive_sort(@config)
-        Digest::MD5.hexdigest(sorted.to_s)
+        OpenSSL::Digest::SHA256.hexdigest(sorted.to_s)
       end
     end
 

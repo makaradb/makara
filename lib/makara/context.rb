@@ -1,5 +1,3 @@
-require 'digest/md5'
-
 # Keeps track of the current stickiness state for different Makara proxies
 module Makara
   class Context
