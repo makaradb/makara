@@ -1,5 +1,5 @@
 test:
-  adapter: 'makara_postgis'
+  adapter: 'postgis_makara'
   database: 'makara_test'
   username: 'root'
   password: ''
